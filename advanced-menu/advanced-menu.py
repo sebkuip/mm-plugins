@@ -361,17 +361,5 @@ class AdvancedMenu(commands.Cog):
         await self.update_config()
         await ctx.send("Option edited.")
 
-    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @advancedmenu.command(name="reset")
-    async def advancedmenu_reset(self, ctx):
-        """Reset the advanced menu to default config."""
-        self.config = {
-            "enabled": True,
-            "options": {"option1": {"label": "option1", "description": "Description 1", "emoji": "👍", "type": "command", "callback": "reply Hello there"}, "option2": {"label": "option2", "description": "Description 2", "emoji": "👎", "type": "submenu", "callback": "menu1"}},
-            "submenus": {"menu1": {"option1": {"label": "option1", "description": "This is the submenu option 1", "emoji": "👍", "type": "command", "callback": "reply General Kenobi"}, "option2": {"label": "option2", "description": "This is the submenu option 2", "emoji": "👎", "type": "command", "callback": "reply Bruhv"}}}
-        }
-        await self.update_config()
-        await ctx.send("Advanced menu has been reset.")
-
 async def setup(bot):
     await bot.add_cog(AdvancedMenu(bot))
