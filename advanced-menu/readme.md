@@ -17,8 +17,10 @@ All commands start with `[p]advancedmenu` and is omitted from the command list b
 
 `toggle`
 Toggle the menu on or off.
+
 `option`
 Subcommands for managing options of the main menu.
+
 `submenu`
 Subcommands for managing submenus.
 
@@ -26,8 +28,10 @@ Subcommands for managing submenus.
 
 `add`
 Add a new option to the main menu.
+
 `edit (option)`
 Edit an option of the main menu.
+
 `remove (option)`
 Remove an option from the main menu.
 
@@ -35,8 +39,10 @@ Remove an option from the main menu.
 
 `create`
 Create a new submenu.
+
 `delete (submenu)`
 Delete a submenu.
+
 `option`
 Subcommands for managing options of a submenu.
 
@@ -44,8 +50,10 @@ Subcommands for managing options of a submenu.
 
 `add`
 Add a new option to a submenu.
+
 `edit (submenu) (option)`
 Edit an option of a submenu.
+
 `remove (submenu) (option)`
 Remove an option from a submenu.
 
