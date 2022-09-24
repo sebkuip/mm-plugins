@@ -105,7 +105,7 @@ class AdvancedMenu(commands.Cog):
         if self.config["enabled"] and self.config["options"] != {}:
             dummyMessage = DummyMessage(copy(initial_message))
             dummyMessage.author = self.bot.modmail_guild.me
-            dummyMessage.content = self.bot.config["embed_text"]
+            dummyMessage.content = self.config["embed_text"]
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
 
