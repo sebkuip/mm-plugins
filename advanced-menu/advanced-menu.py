@@ -342,6 +342,20 @@ class AdvancedMenu(commands.Cog):
         await ctx.send("Submenu deleted.")
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_submenu.command(name="list")
+    async def advancedmenu_submenu_list(self, ctx):
+        """List all submenus for the advanced menu."""
+        if not self.config["submenus"]:
+            return await ctx.send("There are no submenus.")
+
+        submenu_list = f"Submenus:\n{'\n'.join(self.config['submenus'].keys())}"
+
+        if len(submenu_list) > 2000:
+            submenu_list = submenu_list[:1997] + "..."
+
+        await ctx.send(submenu_list)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu.command(name="show")
     async def advancedmenu_submenu_show(self, ctx, *, label):
         """Show the options of a submenu."""
