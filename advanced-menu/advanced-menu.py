@@ -45,7 +45,7 @@ class Dropdown(discord.ui.Select):
         ]
         if not is_home:
             options.append(discord.SelectOption(label="Main menu", description="Go back to the main menu", emoji="🏠"))
-        super().__init__(placeholder=self.bot.config["dropdown_placeholder"], min_values=1, max_values=1, options=options)
+        super().__init__(placeholder=self.config["dropdown_placeholder"], min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         try:
@@ -66,13 +66,14 @@ class DropdownView(discord.ui.View):
         self.bot = bot
         self.msg = msg
         self.thread = thread
-        super().__init__(timeout=self.bot.config["timemout"])
+        self.config = config
+        super().__init__(timeout=self.config["timemout"])
         self.add_item(Dropdown(bot, msg, thread, config, options, is_home))
 
     async def on_timeout(self):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
-        if self.bot.config["delete_on_timeout"]:
+        if self.config["delete_on_timeout"]:
             await self.thread.close(self.bot.guild.me)
 
     async def done(self):
@@ -84,11 +85,12 @@ class AdvancedMenu(commands.Cog):
         self.bot = bot
         self.db = self.bot.plugin_db.get_partition(self)
         self.config = None
+        self.default_config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "delete_on_timeout": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team."}
 
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "advanced-menu"})
         if self.config is None:
-            self.config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "delete_on_timeout": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team.z"}
+            self.config = self.default_config
             await self.update_config()
 
     async def update_config(self):
@@ -498,6 +500,21 @@ class AdvancedMenu(commands.Cog):
 
         await self.update_config()
         await ctx.send("Option edited.")
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu.command(name="update_config")
+    async def advancedmenu_update_config(self, ctx):
+        """Force an update of the config format"""
+
+        missing = []
+        for key in self.default_config.keys():
+            if key not in self.config:
+                missing.append(key)
+
+        if missing:
+            await ctx.send("The following keys are missing from the config: " + ", ".join(missing))
+            for key in missing:
+                self.config[key] = self.default_config[key]
 
 async def setup(bot):
     await bot.add_cog(AdvancedMenu(bot))
