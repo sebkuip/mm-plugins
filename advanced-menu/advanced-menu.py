@@ -3,6 +3,7 @@ import traceback
 import discord
 from discord.ext import commands
 from discord.ext.commands.view import StringView
+import json
 
 from core import checks
 from core.models import DummyMessage, PermissionLevel
@@ -531,6 +532,16 @@ class AdvancedMenu(commands.Cog):
                 self.config[key] = self.default_config[key]
 
         await self.update_config()
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu.command(name="dump_config")
+    async def advancedmenu_dump_config(self, ctx):
+        """Dump the config to chat"""
+
+        with open("config.json", "w") as f:
+            json.dump(self.config, f, indent=4)
+
+        await ctx.send(file=discord.File("config.json"))
 
 async def setup(bot):
     await bot.add_cog(AdvancedMenu(bot))
