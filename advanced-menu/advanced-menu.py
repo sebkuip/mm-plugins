@@ -142,6 +142,19 @@ class AdvancedMenu(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_option.command(name="show")
+    async def advancedmenu_option_show(self, ctx, *, option: str):
+        """Show the details of an option in the main menu"""
+        if option not in self.config["options"]:
+            return await ctx.send("That option does not exist.")
+        embed = discord.Embed(title=self.config["options"][option]["label"], color=discord.Color.blurple())
+        embed.add_field(name="Description", value=self.config["options"][option]["description"], inline=False)
+        embed.add_field(name="Emoji", value=self.config["options"][option]["emoji"], inline=False)
+        embed.add_field(name="Type", value=self.config["options"][option]["type"], inline=False)
+        embed.add_field(name="Command" if self.config["options"][option]["type"] == "command" else "Submenu", value=self.config["options"][option]["callback"], inline=False)
+        await ctx.send(embed=embed)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_option.command(name="add")
     async def advancedmenu_option_add(self, ctx):
         """Add an option to the advanced menu."""
@@ -265,10 +278,45 @@ class AdvancedMenu(commands.Cog):
         await ctx.send("Submenu deleted.")
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_submenu.command(name="show")
+    async def advancedmenu_submenu_show(self, ctx, *, label):
+        """Show the options of a submenu."""
+        if label not in self.config["submenus"]:
+            return await ctx.send("That submenu does not exist.")
+
+        if self.config["submenus"][label] == {}:
+            return await ctx.send(f"There are no options in {label}")
+        embed = discord.Embed(title=label, color=discord.Color.blurple())
+        for v in self.config["submenus"][label].values():
+            embed.add_field(name=v["label"], value=v["description"], inline=False)
+        await ctx.send(embed=embed)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu.group(name="option", invoke_without_command=True)
     async def advancedmenu_submenu_option(self, ctx):
         """Advanced menu submenu option settings."""
         await ctx.send_help(ctx.command)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_submenu_option.command(name="show")
+    async def advancedmenu_submenu_option_show(self, ctx, *, label):
+        """Show the details of an option in the submenu"""
+        if label not in self.config["submenus"]:
+            return await ctx.send("That submenu does not exist.")
+
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+        await ctx.send("What is the label of the option?")
+        option = (await self.bot.wait_for("message", check=check)).content
+
+        if option not in self.config["submenus"][label]:
+            return await ctx.send("That option does not exist.")
+        embed = discord.Embed(title=self.config["submenus"][label][option]["label"], color=discord.Color.blurple())
+        embed.add_field(name="Description", value=self.config["submenus"][label][option]["description"], inline=False)
+        embed.add_field(name="Emoji", value=self.config["submenus"][label][option]["emoji"], inline=False)
+        embed.add_field(name="Type", value=self.config["submenus"][label][option]["type"], inline=False)
+        embed.add_field(name="Command" if self.config["submenus"][label][option]["type"] == "command" else "Submenu", value=self.config["submenus"][label][option]["callback"], inline=False)
+        await ctx.send(embed=embed)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu_option.command(name="add")
