@@ -60,14 +60,14 @@ Subcommands for managing options of a submenu.
 `show (submenu)`
 Will ask for the option. Then shows the details of an option in the submenu.
 
-`add`
+`add (submenu)`
 Add a new option to a submenu.
 
 `edit (submenu)`
-Edit an option of a submenu.
+Will ask for the option. Then edit an option of a submenu.
 
 `remove (submenu)`
-Remove an option from a submenu.
+Will ask for the option. Then removes an option from the submenu.
 
 Most commands will have an interactive aspect to set the details of an option and will be self explanatory. If you require help, please join the modmail discord server [here](https://discord.gg/etJNHCQ) and use the plugin support channel.
 
