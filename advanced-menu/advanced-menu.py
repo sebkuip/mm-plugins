@@ -45,7 +45,7 @@ class Dropdown(discord.ui.Select):
         ]
         if not is_home:
             options.append(discord.SelectOption(label="Main menu", description="Go back to the main menu", emoji="🏠"))
-        super().__init__(placeholder=self.bot.config.get("dropdown_placeholder", "Select an option to contact the staff team"), min_values=1, max_values=1, options=options)
+        super().__init__(placeholder=self.bot.config["dropdown_placeholder"], min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         try:
@@ -66,7 +66,7 @@ class DropdownView(discord.ui.View):
         self.bot = bot
         self.msg = msg
         self.thread = thread
-        super().__init__(timeout=20)
+        super().__init__(timeout=self.bot.config["timemout"])
         self.add_item(Dropdown(bot, msg, thread, config, options, is_home))
 
     async def on_timeout(self):
@@ -88,7 +88,7 @@ class AdvancedMenu(commands.Cog):
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "advanced-menu"})
         if self.config is None:
-            self.config = {"enabled": False, "options": {}, "submenus": {}, "delete_on_timeout": False}
+            self.config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "delete_on_timeout": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team.z"}
             await self.update_config()
 
     async def update_config(self):
@@ -103,7 +103,7 @@ class AdvancedMenu(commands.Cog):
         if self.config["enabled"] and self.config["options"] != {}:
             dummyMessage = DummyMessage(copy(initial_message))
             dummyMessage.author = self.bot.modmail_guild.me
-            dummyMessage.content = self.bot.config.get("embed_text", "Please select an option.")
+            dummyMessage.content = self.bot.config["embed_text"]
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
 
@@ -125,6 +125,28 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_config(self, ctx):
         """Advanced menu config settings."""
         await ctx.send_help(ctx.command)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="get")
+    async def advancedmenu_config_get(self, ctx):
+        """Get the current config."""
+        embed = discord.Embed(title="Advanced menu config", description="The current config for the advanced menu.", color=discord.Color.blurple())
+        embed.add_field(name="Enabled", value=self.config["enabled"])
+        embed.add_field(name="Timeout", value=self.config["timeout"])
+        embed.add_field(name="Delete on timeout", value=self.config["delete_on_timeout"])
+        embed.add_field(name="Embed text", value=self.config["embed_text"])
+        embed.add_field(name="Dropdown placeholder", value=self.config["dropdown_placeholder"])
+        await ctx.send(embed=embed)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="timeout")
+    async def advancedmenu_config_timeout(self, ctx, timeout: int):
+        """Set the timeout for the dropdown menu."""
+        if timeout < 1:
+            return await ctx.send("Timeout must be greater than 1.")
+        self.config["timeout"] = timeout
+        await self.update_config()
+        await ctx.send("Timeout set.")
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_config.command(name="delete_on_timeout")
