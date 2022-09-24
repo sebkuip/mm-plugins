@@ -45,7 +45,7 @@ class Dropdown(discord.ui.Select):
         ]
         if not is_home:
             options.append(discord.SelectOption(label="Main menu", description="Go back to the main menu", emoji="🏠"))
-        super().__init__(placeholder="Select an option to contact the staff team", min_values=1, max_values=1, options=options)
+        super().__init__(placeholder=self.bot.config.get("dropdown_placeholder", "Select an option to contact the staff team"), min_values=1, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
         try:
@@ -63,13 +63,17 @@ class Dropdown(discord.ui.Select):
 
 class DropdownView(discord.ui.View):
     def __init__(self, bot, msg: discord.Message, thread, config: dict, options: dict, is_home: bool):
+        self.bot = bot
         self.msg = msg
+        self.thread = thread
         super().__init__(timeout=20)
         self.add_item(Dropdown(bot, msg, thread, config, options, is_home))
 
     async def on_timeout(self):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
+        if self.bot.config["delete_on_timeout"]:
+            await self.thread.close(self.bot.guild.me)
 
     async def done(self):
         self.stop()
@@ -84,7 +88,7 @@ class AdvancedMenu(commands.Cog):
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "advanced-menu"})
         if self.config is None:
-            self.config = {"enabled": False, "options": {}, "submenus": {}}
+            self.config = {"enabled": False, "options": {}, "submenus": {}, "delete_on_timeout": False}
             await self.update_config()
 
     async def update_config(self):
@@ -99,7 +103,7 @@ class AdvancedMenu(commands.Cog):
         if self.config["enabled"] and self.config["options"] != {}:
             dummyMessage = DummyMessage(copy(initial_message))
             dummyMessage.author = self.bot.modmail_guild.me
-            dummyMessage.content = "Please select an option."
+            dummyMessage.content = self.bot.config.get("embed_text", "Please select an option.")
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
 
@@ -115,6 +119,36 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu(self, ctx):
         """Advanced menu settings."""
         await ctx.send_help(ctx.command)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu.group(name="config", invoke_without_command=True)
+    async def advancedmenu_config(self, ctx):
+        """Advanced menu config settings."""
+        await ctx.send_help(ctx.command)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="delete_on_timeout")
+    async def advancedmenu_config_delete_on_timeout(self, ctx, delete_on_timeout: bool):
+        """Set whether to delete the menu on timeout."""
+        self.config["delete_on_timeout"] = delete_on_timeout
+        await self.update_config()
+        await ctx.send("Done.")
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="embed_text")
+    async def advancedmenu_config_embed_text(self, ctx, *, embed_text: str):
+        """Set the embed text."""
+        self.config["embed_text"] = embed_text
+        await self.update_config()
+        await ctx.send("Done.")
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="dropdown_placeholder")
+    async def advancedmenu_config_dropdown_placeholder(self, ctx, *, dropdown_placeholder: str):
+        """Set the dropdown placeholder text."""
+        self.config["dropdown_placeholder"] = dropdown_placeholder
+        await self.update_config()
+        await ctx.send("Done.")
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu.command(name="toggle")
@@ -176,6 +210,8 @@ class AdvancedMenu(commands.Cog):
 
         await ctx.send("What is the description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+        if len(description) > 100:
+            return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
         await ctx.send("What is the emoji of the option?")
         emoji = (await self.bot.wait_for("message", check=check)).content
@@ -227,7 +263,11 @@ class AdvancedMenu(commands.Cog):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["command", "submenu"]
 
         await ctx.send("What is the new description of the option?")
-        self.config["options"][label]["description"] = (await self.bot.wait_for("message", check=check)).content
+        description = (await self.bot.wait_for("message", check=check)).content
+        if len(description) > 100:
+            return await ctx.send("The description must be less than 100 characters due to discord limitations.")
+
+        self.config["options"][label]["description"] = description
 
         await ctx.send("What is the new emoji of the option?")
         self.config["options"][label]["emoji"] = (await self.bot.wait_for("message", check=check)).content
@@ -346,6 +386,8 @@ class AdvancedMenu(commands.Cog):
 
         await ctx.send("What is the description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+        if len(description) > 100:
+            return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
         await ctx.send("What is the emoji of the option?")
         emoji = (await self.bot.wait_for("message", check=check)).content
@@ -408,7 +450,11 @@ class AdvancedMenu(commands.Cog):
             return await ctx.send("That label does not exist.")
 
         await ctx.send("What is the new description of the option?")
-        self.config["submenus"][submenu][label]["description"] = (await self.bot.wait_for("message", check=check)).content
+        description = (await self.bot.wait_for("message", check=check)).content
+        if len(description) > 100:
+            return await ctx.send("The description must be less than 100 characters due to discord limitations.")
+
+        self.config["submenus"][submenu][label]["description"] = description
 
         await ctx.send("What is the new emoji of the option?")
         self.config["submenus"][submenu][label]["emoji"] = (await self.bot.wait_for("message", check=check)).content
