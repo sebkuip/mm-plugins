@@ -51,10 +51,10 @@ Subcommands for managing options of a submenu.
 `add`
 Add a new option to a submenu.
 
-`edit (submenu) (option)`
+`edit (submenu)`
 Edit an option of a submenu.
 
-`remove (submenu) (option)`
+`remove (submenu)`
 Remove an option from a submenu.
 
 Most commands will have an interactive aspect to set the details of an option and will be self explanatory. If you require help, please join the modmail discord server [here](https://discord.gg/etJNHCQ) and use the plugin support channel.

@@ -261,7 +261,7 @@ class AdvancedMenu(commands.Cog):
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu_option.command(name="add")
-    async def advancedmenu_submenu_option_add(self, ctx, submenu: str):
+    async def advancedmenu_submenu_option_add(self, ctx, *, submenu: str):
         """Add an option to the advanced submenu."""
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
@@ -315,8 +315,13 @@ class AdvancedMenu(commands.Cog):
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu_option.command(name="remove")
-    async def advancedmenu_submenu_option_remove(self, ctx, submenu: str, *, label):
+    async def advancedmenu_submenu_option_remove(self, ctx, *, submenu: str):
         """Remove an option from the advanced submenu."""
+        def check(m):
+            return m.author == ctx.author and m.channel == ctx.channel
+        await ctx.send("What is the label of the option to remove?")
+        label = (await self.bot.wait_for("message", check=check)).content
+
         if label not in self.config["submenus"][submenu]:
             return await ctx.send("That option does not exist.")
 
@@ -326,16 +331,22 @@ class AdvancedMenu(commands.Cog):
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_submenu_option.command(name="edit")
-    async def advancedmenu_submenu_option_edit(self, ctx, submenu: str, *, label):
+    async def advancedmenu_submenu_option_edit(self, ctx, *, submenu: str):
         """Edit an option from the advanced submenu."""
-        if submenu not in self.config["submenus"] and label not in self.config["submenus"][submenu]:
-            return await ctx.send("That option does not exist.")
-
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
 
         def typecheck(m):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["command", "submenu"]
+
+        if submenu not in self.config["submenus"]:
+            return await ctx.send("That submenu does not exist.")
+
+        await ctx.send("What is the label of the option to edit?")
+        label = (await self.bot.wait_for("message", check=check)).content
+
+        if label not in self.config["submenus"][submenu]:
+            return await ctx.send("That label does not exist.")
 
         await ctx.send("What is the new description of the option?")
         self.config["submenus"][submenu][label]["description"] = (await self.bot.wait_for("message", check=check)).content
