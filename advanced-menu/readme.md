@@ -18,6 +18,9 @@ All commands start with `[p]advancedmenu` and is omitted from the command list b
 `toggle`
 Toggle the menu on or off.
 
+`show`
+Show the current options in the main menu.
+
 `option`
 Subcommands for managing options of the main menu.
 
@@ -25,6 +28,9 @@ Subcommands for managing options of the main menu.
 Subcommands for managing submenus.
 
 > ### option subcommands
+
+`show (option)`
+Show the details of an option in the main menu.
 
 `add`
 Add a new option to the main menu.
@@ -37,6 +43,9 @@ Remove an option from the main menu.
 
 > ### submenu subcommands
 
+`show (submenu)`
+Show the options of a submenu.
+
 `create`
 Create a new submenu.
 
@@ -47,6 +56,9 @@ Delete a submenu.
 Subcommands for managing options of a submenu.
 
 > ### submenu option subcommands
+
+`show (submenu)`
+Will ask for the option. Then shows the details of an option in the submenu.
 
 `add`
 Add a new option to a submenu.
