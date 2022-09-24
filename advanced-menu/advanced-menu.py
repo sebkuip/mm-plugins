@@ -190,7 +190,7 @@ class AdvancedMenu(commands.Cog):
         callback = (await self.bot.wait_for("message", check=check)).content
 
         if type == "submenu" and callback not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu add` to add it.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         self.config["options"][label] = {
             "label": label,
@@ -242,7 +242,7 @@ class AdvancedMenu(commands.Cog):
         callback = (await self.bot.wait_for("message", check=check)).content
 
         if type == "submenu" and callback not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu add` to add it.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         self.config["options"][label]["callback"]
 
@@ -282,7 +282,7 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_submenu_show(self, ctx, *, label):
         """Show the options of a submenu."""
         if label not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         if self.config["submenus"][label] == {}:
             return await ctx.send(f"There are no options in {label}")
@@ -302,7 +302,7 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_submenu_option_show(self, ctx, *, label):
         """Show the details of an option in the submenu"""
         if label not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
@@ -360,7 +360,7 @@ class AdvancedMenu(commands.Cog):
         callback = (await self.bot.wait_for("message", check=check)).content
 
         if type == "submenu" and callback not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu add` to add it.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         self.config["submenus"][submenu][label] = {
             "label": label,
@@ -399,7 +399,7 @@ class AdvancedMenu(commands.Cog):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["command", "submenu"]
 
         if submenu not in self.config["submenus"]:
-            return await ctx.send("That submenu does not exist.")
+            return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
         await ctx.send("What is the label of the option to edit?")
         label = (await self.bot.wait_for("message", check=check)).content
