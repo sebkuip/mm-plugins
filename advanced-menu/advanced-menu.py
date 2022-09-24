@@ -530,5 +530,7 @@ class AdvancedMenu(commands.Cog):
             for key in missing:
                 self.config[key] = self.default_config[key]
 
+        await self.update_config()
+
 async def setup(bot):
     await bot.add_cog(AdvancedMenu(bot))
