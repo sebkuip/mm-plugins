@@ -67,7 +67,7 @@ class DropdownView(discord.ui.View):
         self.msg = msg
         self.thread = thread
         self.config = config
-        super().__init__(timeout=self.config["timemout"])
+        super().__init__(timeout=self.config["timeout"])
         self.add_item(Dropdown(bot, msg, thread, config, options, is_home))
 
     async def on_timeout(self):
