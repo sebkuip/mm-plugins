@@ -125,6 +125,17 @@ class AdvancedMenu(commands.Cog):
         await ctx.send(f"Advanced menu is now {'enabled' if self.config['enabled'] else 'disabled'}.")
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu.command(name="show")
+    async def advancedmenu_show(self, ctx):
+        """Show the current options of the main menu"""
+        if self.config["options"] == {}:
+            return await ctx.send("There are no options in the main menu.")
+        embed = discord.Embed(title="Main menu", color=discord.Color.blurple())
+        for k, v in self.config["options"].items():
+            embed.add_field(name=v["label"], value=v["description"], inline=False)
+        await ctx.send(embed=embed)
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu.group(name="option", invoke_without_command=True)
     async def advancedmenu_option(self, ctx):
         """Advanced menu option settings."""
