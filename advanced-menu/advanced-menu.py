@@ -348,7 +348,7 @@ class AdvancedMenu(commands.Cog):
         if not self.config["submenus"]:
             return await ctx.send("There are no submenus.")
 
-        submenu_list = f"Submenus:\n{'\n'.join(self.config['submenus'].keys())}"
+        submenu_list = "Submenus:\n" + ('\n'.join(self.config['submenus'].keys()))
 
         if len(submenu_list) > 2000:
             submenu_list = submenu_list[:1997] + "..."
