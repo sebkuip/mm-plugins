@@ -226,8 +226,12 @@ class AdvancedMenu(commands.Cog):
         if len(self.config["options"]) >= 25:
             return await ctx.send("You can only have a maximum of 25 options due to discord limitations.")
 
+        await ctx.send("You can type `cancel` at any time to cancel the process.")
         await ctx.send("What is the label of the option?")
         label = (await self.bot.wait_for("message", check=check)).content
+
+        if label.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if label in self.config["options"]:
             await ctx.send("That option already exists. Use `advancedmenu edit` to edit it.")
@@ -235,20 +239,33 @@ class AdvancedMenu(commands.Cog):
 
         await ctx.send("What is the description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+
+        if description.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         if len(description) > 100:
             return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
         await ctx.send("What is the emoji of the option?")
         emoji = (await self.bot.wait_for("message", check=check)).content
 
+        if emoji.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         await ctx.send("What is the type of the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content
+
+        if type.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if type == "command":
             await ctx.send("What is the command to run for the option?")
         else:
             await ctx.send("What is the label of the submenu for the option?")
         callback = (await self.bot.wait_for("message", check=check)).content
+
+        if callback.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if type == "submenu" and callback not in self.config["submenus"]:
             return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
@@ -287,24 +304,40 @@ class AdvancedMenu(commands.Cog):
         def typecheck(m):
             return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["command", "submenu"]
 
+        await ctx.send("You can send `cancel` at any time to cancel the process.")
         await ctx.send("What is the new description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+
+        if description.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         if len(description) > 100:
             return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
         self.config["options"][label]["description"] = description
 
         await ctx.send("What is the new emoji of the option?")
-        self.config["options"][label]["emoji"] = (await self.bot.wait_for("message", check=check)).content
+        emoji = (await self.bot.wait_for("message", check=check)).content
+
+        if emoji.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
+        self.config["options"][label]["emoji"] = emoji
 
         await ctx.send("What is the new type of the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
+
+        if type.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if type == "command":
             await ctx.send("What is the new command to run for the option?")
         else:
             await ctx.send("What is the new label of the new submenu for the option?")
         callback = (await self.bot.wait_for("message", check=check)).content
+
+        if callback.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if type == "submenu" and callback not in self.config["submenus"]:
             return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
@@ -385,8 +418,13 @@ class AdvancedMenu(commands.Cog):
 
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
+
+        await ctx.send("You can send `cancel` at any time to cancel the process.")
         await ctx.send("What is the label of the option?")
         option = (await self.bot.wait_for("message", check=check)).content
+
+        if option.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if option not in self.config["submenus"][label]:
             return await ctx.send("That option does not exist.")
@@ -413,8 +451,12 @@ class AdvancedMenu(commands.Cog):
         if len(self.config["submenus"][submenu]) >= 24:
             return await ctx.send("You can only have a maximum of 24 options due to discord limitations.")
 
+        await ctx.send("You can send `cancel` at any time to cancel the process.")
         await ctx.send("What is the label of the option?")
         label = (await self.bot.wait_for("message", check=check)).content
+
+        if label.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if label == "Main menu":
             return await ctx.send("You cannot use that label.")
@@ -425,14 +467,24 @@ class AdvancedMenu(commands.Cog):
 
         await ctx.send("What is the description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+
+        if description.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         if len(description) > 100:
             return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
         await ctx.send("What is the emoji of the option?")
         emoji = (await self.bot.wait_for("message", check=check)).content
 
+        if emoji.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         await ctx.send("What is the type for the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
+
+        if type == "cancel":
+            return await ctx.send("Cancelled.")
 
         if type == "command":
             await ctx.send("What is the command to run for the option?")
@@ -459,8 +511,13 @@ class AdvancedMenu(commands.Cog):
         """Remove an option from the advanced submenu."""
         def check(m):
             return m.author == ctx.author and m.channel == ctx.channel
+
+        await ctx.send("You can send `cancel` at any time to cancel the process.")
         await ctx.send("What is the label of the option to remove?")
         label = (await self.bot.wait_for("message", check=check)).content
+
+        if label.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if label not in self.config["submenus"][submenu]:
             return await ctx.send("That option does not exist.")
@@ -482,35 +539,52 @@ class AdvancedMenu(commands.Cog):
         if submenu not in self.config["submenus"]:
             return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
+        await ctx.send("You can send `cancel` at any time to cancel the process.")
         await ctx.send("What is the label of the option to edit?")
         label = (await self.bot.wait_for("message", check=check)).content
+
+        if label.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         if label not in self.config["submenus"][submenu]:
             return await ctx.send("That label does not exist.")
 
         await ctx.send("What is the new description of the option?")
         description = (await self.bot.wait_for("message", check=check)).content
+
+        if description.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         if len(description) > 100:
             return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
-        self.config["submenus"][submenu][label]["description"] = description
-
         await ctx.send("What is the new emoji of the option?")
-        self.config["submenus"][submenu][label]["emoji"] = (await self.bot.wait_for("message", check=check)).content
+        emoji = (await self.bot.wait_for("message", check=check)).content
+
+        if emoji.lower() == "cancel":
+            return await ctx.send("Cancelled.")
 
         await ctx.send("What is the new type for the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
 
-        self.config["submenus"][submenu][label]["type"] = type
+        if type == "cancel":
+            return await ctx.send("Cancelled.")
+
         if type == "command":
             await ctx.send("What is the command to run for the option?")
         else:
             await ctx.send("What is the label of the submenu for the option?")
         callback = (await self.bot.wait_for("message", check=check)).content
 
+        if callback.lower() == "cancel":
+            return await ctx.send("Cancelled.")
+
         if type == "submenu" and callback not in self.config["submenus"]:
             return await ctx.send("That submenu does not exist.")
 
+        self.config["submenus"][submenu][label]["description"] = description
+        self.config["submenus"][submenu][label]["emoji"] = emoji
+        self.config["submenus"][submenu][label]["type"] = type
         self.config["submenus"][submenu][label]["callback"] = callback
 
         await self.update_config()
