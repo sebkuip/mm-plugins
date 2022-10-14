@@ -6,7 +6,7 @@ Create a menu using discord's selector menu. Includes sub menus too!
 
 This plugin works on the modmail bot made by kyb3r. You can find the bot [here](https://github.com/kyb3r/modmail). Use the command below to install this plugin into your bot.
 
-`[p]plugins add sebkuip/mm-plugins/advanced-menu`
+`[p]plugins add advanced-menu`
 
 ## Usage
 
