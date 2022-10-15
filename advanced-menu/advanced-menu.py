@@ -314,15 +314,11 @@ class AdvancedMenu(commands.Cog):
         if len(description) > 100:
             return await ctx.send("The description must be less than 100 characters due to discord limitations.")
 
-        self.config["options"][label]["description"] = description
-
         await ctx.send("What is the new emoji of the option?")
         emoji = (await self.bot.wait_for("message", check=check)).content
 
         if emoji.lower() == "cancel":
             return await ctx.send("Cancelled.")
-
-        self.config["options"][label]["emoji"] = emoji
 
         await ctx.send("What is the new type of the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
@@ -342,7 +338,13 @@ class AdvancedMenu(commands.Cog):
         if type == "submenu" and callback not in self.config["submenus"]:
             return await ctx.send("That submenu does not exist. Use `advancedmenu submenu create` to add it.")
 
-        self.config["options"][label]["callback"]
+        self.config["options"][label] = {
+            "label": label,
+            "description": description,
+            "emoji": emoji,
+            "type": type,
+            "callback": callback
+        }
 
         await self.update_config()
         await ctx.send("Option edited.")
