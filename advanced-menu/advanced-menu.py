@@ -253,9 +253,9 @@ class AdvancedMenu(commands.Cog):
             return await ctx.send("Cancelled.")
 
         await ctx.send("What is the type of the option? (command/submenu)")
-        type = (await self.bot.wait_for("message", check=typecheck)).content
+        type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
 
-        if type.lower() == "cancel":
+        if type == "cancel":
             return await ctx.send("Cancelled.")
 
         if type == "command":
@@ -323,7 +323,7 @@ class AdvancedMenu(commands.Cog):
         await ctx.send("What is the new type of the option? (command/submenu)")
         type = (await self.bot.wait_for("message", check=typecheck)).content.lower()
 
-        if type.lower() == "cancel":
+        if type == "cancel":
             return await ctx.send("Cancelled.")
 
         if type == "command":
