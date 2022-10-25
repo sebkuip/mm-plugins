@@ -107,6 +107,13 @@ class AdvancedMenu(commands.Cog):
             dummyMessage = DummyMessage(copy(initial_message))
             dummyMessage.author = self.bot.modmail_guild.me
             dummyMessage.content = self.config["embed_text"]
+
+            # clear message of residual attributes from the copy
+            dummyMessage.attachments = []
+            dummyMessage.components = []
+            dummyMessage.embeds = []
+            dummyMessage.stickers = []
+
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
 
