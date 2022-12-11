@@ -75,7 +75,7 @@ class DropdownView(discord.ui.View):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
         if self.config["delete_on_timeout"]:
-            await self.thread.close(self.bot.guild.me)
+            await self.thread.close(closer=self.bot.guild.me)
 
     async def done(self):
         self.stop()
