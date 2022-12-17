@@ -11,7 +11,7 @@ class Userid_lister(commands.Cog):
     async def userid(self, ctx):
         await ctx.send(ctx.thread.recipient.id)
 
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_thread_ready(self, thread, creator, category, initial_message):
         await thread.channel.send(thread.recipient.id)
 
