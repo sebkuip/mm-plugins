@@ -649,7 +649,7 @@ class AdvancedMenu(commands.Cog):
 
         # Load json and validate it
         try:
-            data = json_data.loads(json)
+            data = json.loads(json_data)
         except json.decoder.JSONDecodeError:
             return await ctx.send("Invalid json file.")
 
