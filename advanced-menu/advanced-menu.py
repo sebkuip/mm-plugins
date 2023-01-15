@@ -645,11 +645,11 @@ class AdvancedMenu(commands.Cog):
         if not ctx.message.attachments:
             return await ctx.send("You must attach a json file to load the config from.")
         b = await ctx.message.attachments[0].read()
-        json = b.decode("utf-8").replace("'", '"')
+        json_data = b.decode("utf-8").replace("'", '"')
 
         # Load json and validate it
         try:
-            data = json.loads(json)
+            data = json_data.loads(json)
         except json.decoder.JSONDecodeError:
             return await ctx.send("Invalid json file.")
 
@@ -664,6 +664,7 @@ class AdvancedMenu(commands.Cog):
         # push new config to bot
         self.config = data
         await self.update_config()
+        await ctx.send("Successfully loaded config")
 
 async def setup(bot):
     await bot.add_cog(AdvancedMenu(bot))
