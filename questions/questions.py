@@ -31,6 +31,7 @@ class Questions(commands.Cog):
         q_message.author = self.bot.modmail_guild.me
 
         for question in config['questions']:
+            print(question)
             q_message.content = question
             await thread.reply(q_message)
 
@@ -48,6 +49,7 @@ class Questions(commands.Cog):
                         answer += f"\n`{attachment.filename}`: {attachment.url}"
 
                 responses[question] = answer
+            print("looping")
 
         await asyncio.sleep(1)
         em = discord.Embed(color=self.bot.main_color, timestamp=datetime.utcnow())
