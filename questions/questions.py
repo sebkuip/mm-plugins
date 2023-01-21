@@ -39,9 +39,10 @@ class Questions(commands.Cog):
                 m = await self.user_resp(thread.recipient, thread.recipient, timeout=15000)
                 print(m.content)
             except asyncio.TimeoutError:
+                print("timeout")
                 await thread.close(closer=self.bot.modmail_guild.me, message='Closed due to inactivity and not responding to questions')
                 return
-            else:
+            finally:
                 answer = m.content if m.content else "<No Message Content>"
                 answer += "\n"
                 if len(m.attachments) > 0:
