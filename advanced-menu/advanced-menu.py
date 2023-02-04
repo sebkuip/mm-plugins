@@ -74,11 +74,19 @@ class DropdownView(discord.ui.View):
     async def on_timeout(self):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
+
+        if self.config["block_until_done"] and self.thread._recipient:
+            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
+
         if self.config["close_on_timeout"]:
             await self.thread.close(closer=self.bot.guild.me)
 
     async def done(self):
         self.stop()
+
+        if self.config["block_until_done"] and self.thread._recipient:
+            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
+
         await self.msg.edit(view=None)
 
 class AdvancedMenu(commands.Cog):
@@ -86,7 +94,7 @@ class AdvancedMenu(commands.Cog):
         self.bot = bot
         self.db = self.bot.plugin_db.get_partition(self)
         self.config = None
-        self.default_config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "close_on_timeout": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team."}
+        self.default_config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "close_on_timeout": False, "block_until_done": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team."}
 
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "advanced-menu"})
@@ -124,6 +132,9 @@ class AdvancedMenu(commands.Cog):
             dummyMessage.embeds = []
             dummyMessage.stickers = []
 
+            if self.config["block_until_done"]:
+                self.bot.config["blocked"][str(thread._recipient.id)] = "Dropdown creation"
+
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
 
@@ -153,6 +164,7 @@ class AdvancedMenu(commands.Cog):
         embed = discord.Embed(title="Advanced menu config", description="The current config for the advanced menu.", color=discord.Color.blurple())
         embed.add_field(name="Enabled", value=self.config["enabled"])
         embed.add_field(name="Timeout", value=self.config["timeout"])
+        embed.add_field(name="Block until selected", value=self.config["block_until_done"])
         embed.add_field(name="Delete on timeout", value=self.config["close_on_timeout"])
         embed.add_field(name="Embed text", value=self.config["embed_text"])
         embed.add_field(name="Dropdown placeholder", value=self.config["dropdown_placeholder"])
@@ -173,6 +185,14 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_config_close_on_timeout(self, ctx, close_on_timeout: bool):
         """Set whether to delete the menu on timeout."""
         self.config["close_on_timeout"] = close_on_timeout
+        await self.update_config()
+        await ctx.send("Done.")
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="block_until_done")
+    async def advancedmenu_config_close_on_timeout(self, ctx, block_until_done: bool):
+        """Set whether to block the user's replies until they complete the dropdown."""
+        self.config["block_until_done"] = block_until_done
         await self.update_config()
         await ctx.send("Done.")
 
