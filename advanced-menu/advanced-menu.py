@@ -665,12 +665,13 @@ class AdvancedMenu(commands.Cog):
         if not ctx.message.attachments:
             return await ctx.send("You must attach a json file to load the config from.")
         b = await ctx.message.attachments[0].read()
-        json_data = b.decode("utf-8").replace("'", '"')
+        json_data = b.decode("utf-8").replace("'", '\\"')
 
         # Load json and validate it
         try:
             data = json.loads(json_data)
-        except json.decoder.JSONDecodeError:
+        except json.decoder.JSONDecodeError as err:
+            print("Error parsing JSON", err)
             return await ctx.send("Invalid json file.")
 
         # validate json format against default config
