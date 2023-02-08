@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.view import StringView
 import json
+import re
 
 from core import checks
 from core.models import DummyMessage, PermissionLevel
@@ -51,11 +52,14 @@ class Dropdown(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         try:
             # await interaction.response.send_message("You selected {}".format(self.values[0]))
+            selectionType = self.data[self.values[0]]["type"]
+
             await interaction.response.defer()
-            await self.view.done()
+            await self.view.done(selectionType)
+
             if  self.values[0] == "Main menu":
                 await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["options"], True))
-            elif self.data[self.values[0]]["type"] == "command":
+            elif selectionType == "command":
                 await invoke_commands(self.data[self.values[0]]["callback"], self.bot, self.thread, DummyMessage(copy(self.thread._genesis_message)))
             else:
                 await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["submenus"][self.data[self.values[0]]["callback"]], False))
@@ -81,10 +85,10 @@ class DropdownView(discord.ui.View):
         if self.config["close_on_timeout"]:
             await self.thread.close(closer=self.bot.guild.me)
 
-    async def done(self):
+    async def done(self, selectionType):
         self.stop()
 
-        if self.config["block_until_done"] and self.thread._recipient:
+        if selectionType != "submenu" and self.config["block_until_done"] and self.thread._recipient:
             self.bot.config["blocked"].pop(str(self.thread._recipient.id))
 
         await self.msg.edit(view=None)
@@ -665,7 +669,7 @@ class AdvancedMenu(commands.Cog):
         if not ctx.message.attachments:
             return await ctx.send("You must attach a json file to load the config from.")
         b = await ctx.message.attachments[0].read()
-        json_data = b.decode("utf-8").replace("'", '\\"')
+        json_data = b.decode("utf-8")
 
         # Load json and validate it
         try:
