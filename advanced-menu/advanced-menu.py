@@ -127,7 +127,7 @@ class AdvancedMenu(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_close(self, thread, closer, silent, delete_channel, message, scheduled): # Unblock if thread is closed before responding
         if thread._recipient and str(thread._recipient.id) in self.bot.config["blocked"] and self.bot.config["blocked"][str(thread._recipient.id)] == "Dropdown creation":
-            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
+            self.bot.config["blocked"].pop(str(thread._recipient.id))
 
     @commands.Cog.listener()
     async def on_thread_ready(self, thread, creator, category, initial_message):
