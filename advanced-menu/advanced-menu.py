@@ -52,12 +52,13 @@ class Dropdown(discord.ui.Select):
     async def callback(self, interaction: discord.Interaction):
         try:
             # await interaction.response.send_message("You selected {}".format(self.values[0]))
-            selectionType = self.data[self.values[0]]["type"]
+            selectionType = "submenu" if self.values[0] == "Main menu" else self.data[self.values[0]]["type"]
+            print("Selection", self.data, self.values[0], selectionType)
 
             await interaction.response.defer()
             await self.view.done(selectionType)
 
-            if  self.values[0] == "Main menu":
+            if self.values[0] == "Main menu":
                 await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["options"], True))
             elif selectionType == "command":
                 await invoke_commands(self.data[self.values[0]]["callback"], self.bot, self.thread, DummyMessage(copy(self.thread._genesis_message)))
@@ -122,6 +123,11 @@ class AdvancedMenu(commands.Cog):
             {"$set": self.config},
             upsert=True,
         )
+
+    @commands.Cog.listener()
+    async def on_thread_close(self, thread, closer, silent, delete_channel, message, scheduled): # Unblock if thread is closed before responding
+        if thread._recipient and str(thread._recipient.id) in self.bot.config["blocked"] and self.bot.config["blocked"][str(thread._recipient.id)] == "Dropdown creation":
+            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
 
     @commands.Cog.listener()
     async def on_thread_ready(self, thread, creator, category, initial_message):
