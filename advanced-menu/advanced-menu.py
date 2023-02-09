@@ -53,8 +53,7 @@ class Dropdown(discord.ui.Select):
         try:
             # await interaction.response.send_message("You selected {}".format(self.values[0]))
             selectionType = "submenu" if self.values[0] == "Main menu" else self.data[self.values[0]]["type"]
-            print("Selection", self.data, self.values[0], selectionType)
-
+  
             await interaction.response.defer()
             await self.view.done(selectionType)
 
