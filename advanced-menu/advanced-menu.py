@@ -79,6 +79,8 @@ class DropdownView(discord.ui.View):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
 
+        print("Time out", self.bot, self.bot.config["blocked"])
+
         recipientId = self.thread._recipient and str(self.thread._recipient.id)
         if self.config["block_until_done"] and recipientId in self.bot.config["blocked"] and self.bot.config["blocked"][recipientId] == "Dropdown creation":
             self.bot.config["blocked"].pop(recipientId)
@@ -128,7 +130,7 @@ class AdvancedMenu(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_close(self, thread, closer, silent, delete_channel, message, scheduled): # Unblock if thread is closed before responding
         recipientId = thread._recipient and str(thread._recipient.id)
-        if thread in self.bot.config["blocked"] and self.bot.config["blocked"][thread] == "Dropdown creation":
+        if thread in self.bot.config["blocked"] and self.bot.config["blocked"][recipientId] == "Dropdown creation":
             self.bot.config["blocked"].pop(thread)
 
     @commands.Cog.listener()
