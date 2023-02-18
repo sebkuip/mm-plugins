@@ -79,8 +79,9 @@ class DropdownView(discord.ui.View):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
 
-        if self.config["block_until_done"] and self.thread._recipient:
-            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
+        recipientId = self.thread._recipient and str(self.thread._recipient.id)
+        if self.config["block_until_done"] and recipientId in self.bot.config["blocked"] and self.bot.config["blocked"][recipientId] == "Dropdown creation":
+            self.bot.config["blocked"].pop(recipientId)
 
         if self.config["close_on_timeout"]:
             await self.thread.close(closer=self.bot.guild.me)
@@ -88,8 +89,9 @@ class DropdownView(discord.ui.View):
     async def done(self, selectionType):
         self.stop()
 
-        if selectionType != "submenu" and self.config["block_until_done"] and self.thread._recipient:
-            self.bot.config["blocked"].pop(str(self.thread._recipient.id))
+        recipientId = self.thread._recipient and str(self.thread._recipient.id)
+        if selectionType != "submenu" and self.config["block_until_done"] and recipientId in self.bot.config["blocked"] and self.bot.config["blocked"][recipientId] == "Dropdown creation":
+            self.bot.config["blocked"].pop(recipientId)
 
         await self.msg.edit(view=None)
 
@@ -125,8 +127,9 @@ class AdvancedMenu(commands.Cog):
 
     @commands.Cog.listener()
     async def on_thread_close(self, thread, closer, silent, delete_channel, message, scheduled): # Unblock if thread is closed before responding
-        if thread._recipient and str(thread._recipient.id) in self.bot.config["blocked"] and self.bot.config["blocked"][str(thread._recipient.id)] == "Dropdown creation":
-            self.bot.config["blocked"].pop(str(thread._recipient.id))
+        recipientId = thread._recipient and str(thread._recipient.id)
+        if thread in self.bot.config["blocked"] and self.bot.config["blocked"][thread] == "Dropdown creation":
+            self.bot.config["blocked"].pop(thread)
 
     @commands.Cog.listener()
     async def on_thread_ready(self, thread, creator, category, initial_message):
@@ -199,7 +202,7 @@ class AdvancedMenu(commands.Cog):
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
     @advancedmenu_config.command(name="block_until_done")
-    async def advancedmenu_config_close_on_timeout(self, ctx, block_until_done: bool):
+    async def advancedmenu_config_block_until_done(self, ctx, block_until_done: bool):
         """Set whether to block the user's replies until they complete the dropdown."""
         self.config["block_until_done"] = block_until_done
         await self.update_config()
