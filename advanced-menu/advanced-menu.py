@@ -79,8 +79,6 @@ class DropdownView(discord.ui.View):
         await self.msg.edit(view=None)
         await self.msg.channel.send("Timed out")
 
-        print("Time out", self.bot, self.bot.config["blocked"])
-
         recipientId = self.thread._recipient and str(self.thread._recipient.id)
         if self.config["block_until_done"] and recipientId in self.bot.config["blocked"] and self.bot.config["blocked"][recipientId] == "Dropdown creation":
             self.bot.config["blocked"].pop(recipientId)
