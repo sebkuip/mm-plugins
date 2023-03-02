@@ -144,11 +144,11 @@ class AdvancedMenu(commands.Cog):
             dummyMessage.embeds = []
             dummyMessage.stickers = []
 
-            if self.config["block_until_done"]:
-                self.bot.config["blocked"][str(thread._recipient.id)] = "Dropdown creation"
-
             msgs, _ = await thread.reply(dummyMessage)
             main_recipient_msg = None
+
+            if self.config["block_until_done"]:
+                self.bot.config["blocked"][str(thread._recipient.id)] = "Dropdown creation"
 
             for m in msgs:
                 if m.channel.recipient == thread.recipient:
