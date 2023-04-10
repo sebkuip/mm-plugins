@@ -53,12 +53,12 @@ class Dropdown(discord.ui.Select):
             # await interaction.response.send_message("You selected {}".format(self.values[0]))
             await interaction.response.defer()
             await self.view.done()
-            if  self.values[0] == "Main menu":
+            if self.values[0] == "Main menu":
                 await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["options"], True))
             elif self.data[self.values[0].lower().replace(" ", "_")]["type"] == "command":
-                await invoke_commands(self.data[self.values[0]]["callback"], self.bot, self.thread, DummyMessage(copy(self.thread._genesis_message)))
+                await invoke_commands(self.data[self.values[0].lower().replace(" ", "_")]["callback"], self.bot, self.thread, DummyMessage(copy(self.thread._genesis_message)))
             else:
-                await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["submenus"][self.data[self.values[0]]["callback"]], False))
+                await self.msg.edit(view=DropdownView(self.bot, self.msg, self.thread, self.config, self.config["submenus"][self.data[self.values[0].lower().replace(" ", "_")]["callback"]], False))
         except Exception as e:
                 print(traceback.format_exc())
 
