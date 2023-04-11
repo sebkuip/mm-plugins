@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 
+from core import checks
+from core.models import PermissionLevel
+
 from io import BytesIO
 from PIL import Image
 
@@ -8,6 +11,7 @@ class ImgFlipper(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @checks.has_permissions(PermissionLevel.SUPPORTER)
     @commands.command()
     async def imgflip(self, ctx: commands.Context):
         """Flip an image horizontally"""
