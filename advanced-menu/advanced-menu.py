@@ -232,7 +232,7 @@ class AdvancedMenu(commands.Cog):
         await ctx.send(embed=embed)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
-    @advancedmenu_label.command(name="add")
+    @advancedmenu_option.command(name="add")
     async def advancedmenu_option_add(self, ctx):
         """Add an option to the advanced menu."""
         def check(m):
