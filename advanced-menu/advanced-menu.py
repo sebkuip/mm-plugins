@@ -221,7 +221,7 @@ class AdvancedMenu(commands.Cog):
     @advancedmenu_option.command(name="show")
     async def advancedmenu_option_show(self, ctx, *, label: str):
         """Show the details of an option in the main menu"""
-         = label.lower().replace(" ", "_")
+        label = label.lower().replace(" ", "_")
         if label not in self.config["labels"]:
             return await ctx.send("That label does not exist.")
         embed = discord.Embed(title=self.config["labels"][label]["label"], color=discord.Color.blurple())
