@@ -222,13 +222,13 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_option_show(self, ctx, *, label: str):
         """Show the details of an option in the main menu"""
         label = label.lower().replace(" ", "_")
-        if label not in self.config["labels"]:
+        if label not in self.config["options"]:
             return await ctx.send("That label does not exist.")
-        embed = discord.Embed(title=self.config["labels"][label]["label"], color=discord.Color.blurple())
-        embed.add_field(name="Description", value=self.config["labels"][label]["description"], inline=False)
-        embed.add_field(name="Emoji", value=self.config["labels"][label]["emoji"], inline=False)
-        embed.add_field(name="Type", value=self.config["labels"][label]["type"], inline=False)
-        embed.add_field(name="Command" if self.config["labels"][label]["type"] == "command" else "Submenu", value=self.config["labels"][label]["callback"], inline=False)
+        embed = discord.Embed(title=self.config["options"][label]["label"], color=discord.Color.blurple())
+        embed.add_field(name="Description", value=self.config["options"][label]["description"], inline=False)
+        embed.add_field(name="Emoji", value=self.config["options"][label]["emoji"], inline=False)
+        embed.add_field(name="Type", value=self.config["options"][label]["type"], inline=False)
+        embed.add_field(name="Command" if self.config["options"][label]["type"] == "command" else "Submenu", value=self.config["options"][label]["callback"], inline=False)
         await ctx.send(embed=embed)
 
     @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
