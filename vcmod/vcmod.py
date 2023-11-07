@@ -41,8 +41,8 @@ class VcMod(commands.Cog):
             await self.get_roles()
         await member.remove_roles(*[self.access_role,])
         await member.add_roles(*[self.block_role,])
-        await ctx.send(f"Done! Blocked access for {member}"
-        "**WARNING:** For this command to work, you must **FIRST** run `t@score [userid]` to remove all of the user's points from the tatsu bot. (Use the “Penalize user score” option.) Otherwise tatsu will give them access again!"
+        await ctx.send(f"Done! Blocked access for {member} "
+        "**WARNING:** For this command to work, you must **FIRST** run `t@score [userid]` to remove all of the user's points from the tatsu bot. (Use the “Penalize user score” option.) Otherwise tatsu will give them access again! "
         "**AFTER** that is done, run this command again to give them the <@&1171343228411318314> role (This role prevents tatsu from giving access again!)."
         "This command also removes the <@&1170162673057550366> role if present."
         )
