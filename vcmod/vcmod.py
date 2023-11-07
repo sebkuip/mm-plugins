@@ -31,7 +31,7 @@ class VcMod(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @voicemod.command(name="give", aliases=["allow"])
     async def give(self, ctx, member: discord.Member):
-        if not self.allow_role:
+        if self.allow_role is None:
             await self.get_roles()
         await member.remove_roles(*self.block_role)
         await member.add_roles(*self.access_role)
@@ -40,7 +40,7 @@ class VcMod(commands.Cog):
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @voicemod.command(name="block", aliases=["disallow"])
     async def block(self, ctx, member: discord.Member):
-        if not self.allow_role:
+        if self.allow_role is None:
             await self.get_roles()
         await member.remove_roles(*self.access_role)
         await member.add_roles(*self.block_role)
