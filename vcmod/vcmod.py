@@ -26,7 +26,7 @@ class VcMod(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    @voicemod.command(name="give", aliases=["allow"], help="Allow voice chat access to a user.")
+    @voicemod.command(name="give", aliases=["allow"], help="Allow green voice chat access to a user.")
     async def give(self, ctx, member: discord.Member):
         if self.access_role is None:
             await self.get_roles()
@@ -35,7 +35,7 @@ class VcMod(commands.Cog):
         await ctx.reply(f"Done! {member} has been given the <@&1170162673057550366> role, and (if present) the <@&1171343228411318314> role has been removed.")
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    @voicemod.command(name="block", aliases=["disallow"], help="Blocks voice chat access from a user. Please make sure to run tatsu's commands as instructed.")
+    @voicemod.command(name="block", aliases=["disallow"], help="Blocks green voice chat access from a user. Please make sure to run tatsu's commands as instructed.")
     async def block(self, ctx, member: discord.Member):
         if self.access_role is None:
             await self.get_roles()
