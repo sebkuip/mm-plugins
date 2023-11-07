@@ -7,9 +7,6 @@ from discord.ext import commands
 class VcMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        guild = self.bot.get_guild(685715989891121152)
-        self.access_role = guild.get_role(1171348301501706390)
-        self.block_role = guild.get_role(1171348301501706390)
 
         print(self.access_role)
         print(self.block_role)
@@ -20,8 +17,8 @@ class VcMod(commands.Cog):
     async def get_roles(self):
         guild = self.bot.get_guild(685715989891121152)
         await guild.fetch_roles()
-        self.access_role = guild.get_role(1171348301501706390)
-        self.block_role = guild.get_role(1171348301501706390)
+        self.access_role = guild.get_role(1170162673057550366)
+        self.block_role = guild.get_role(1171343228411318314)
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @commands.group(invoke_without_command=True)
