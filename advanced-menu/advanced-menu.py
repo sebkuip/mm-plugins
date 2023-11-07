@@ -85,7 +85,7 @@ class AdvancedMenu(commands.Cog):
         self.bot = bot
         self.db = self.bot.plugin_db.get_partition(self)
         self.config = None
-        self.default_config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "close_on_timeout": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team."}
+        self.default_config = {"enabled": False, "options": {}, "submenus": {}, "timeout": 20, "close_on_timeout": False, "anonymous_menu": False, "embed_text": "Please select an option.", "dropdown_placeholder": "Select an option to contact the staff team."}
 
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "advanced-menu"})
@@ -123,7 +123,7 @@ class AdvancedMenu(commands.Cog):
             dummyMessage.embeds = []
             dummyMessage.stickers = []
 
-            msgs, _ = await thread.reply(dummyMessage)
+            msgs, _ = await thread.reply(dummyMessage, self.config["anonymous_menu"])
             main_recipient_msg = None
 
             for m in msgs:
@@ -188,6 +188,14 @@ class AdvancedMenu(commands.Cog):
     async def advancedmenu_config_dropdown_placeholder(self, ctx, *, dropdown_placeholder: str):
         """Set the dropdown placeholder text."""
         self.config["dropdown_placeholder"] = dropdown_placeholder
+        await self.update_config()
+        await ctx.send("Done.")
+
+    @checks.has_permissions(PermissionLevel.ADMINISTRATOR)
+    @advancedmenu_config.command(name="anonymous_menu")
+    async def advancedmenu_config_anonymous_menu(self, ctx, option: bool):
+        """Set the menu to be sent anonymously or not"""
+        self.config["anonymous_menu"] = option
         await self.update_config()
         await ctx.send("Done.")
 
