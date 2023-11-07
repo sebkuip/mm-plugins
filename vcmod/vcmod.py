@@ -11,6 +11,9 @@ class VcMod(commands.Cog):
         self.access_role = guild.get_role(1171348301501706390)
         self.block_role = guild.get_role(1171348301501706390)
 
+        print(self.access_role)
+        print(self.block_role)
+
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @commands.group(invoke_without_command=True)
     async def voicemod(self, ctx):
