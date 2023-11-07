@@ -26,22 +26,22 @@ class VcMod(commands.Cog):
         await ctx.send_help(ctx.command)
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    @voicemod.command(name="give", aliases=["allow"])
+    @voicemod.command(name="give", aliases=["allow"], help="Allow voice chat access to a user.")
     async def give(self, ctx, member: discord.Member):
         if self.access_role is None:
             await self.get_roles()
         await member.remove_roles(*[self.block_role,])
         await member.add_roles(*[self.access_role,])
-        await ctx.send(f"Done! {member} has been given the <@&1170162673057550366> role, and (if present) the <@&1171343228411318314> role has been removed.")
+        await ctx.reply(f"Done! {member} has been given the <@&1170162673057550366> role, and (if present) the <@&1171343228411318314> role has been removed.")
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
-    @voicemod.command(name="block", aliases=["disallow"])
+    @voicemod.command(name="block", aliases=["disallow"], help="Blocks voice chat access from a user. Please make sure to run tatsu's commands as instructed.")
     async def block(self, ctx, member: discord.Member):
         if self.access_role is None:
             await self.get_roles()
         await member.remove_roles(*[self.access_role,])
         await member.add_roles(*[self.block_role,])
-        await ctx.send(f"Done! Blocked access for {member}\n"
+        await ctx.reply(f"Done! Blocked access for {member}\n"
         "**WARNING:** For this command to work, you must **FIRST** run `t@score [userid]` to remove all of the user's points from the tatsu bot. (Use the “Penalize user score” option.) Otherwise tatsu will give them access again! "
         "**AFTER** that is done, run this command again to give them the <@&1171343228411318314> role (This role prevents tatsu from giving access again!)."
         "This command also removes the <@&1170162673057550366> role if present."
