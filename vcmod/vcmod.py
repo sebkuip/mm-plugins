@@ -10,9 +10,6 @@ class VcMod(commands.Cog):
         self.access_role = None
         self.block_role = None
 
-        print(self.access_role)
-        print(self.block_role)
-
     async def cog_load(self):
         await self.get_roles()
 
