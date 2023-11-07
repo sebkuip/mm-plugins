@@ -22,12 +22,14 @@ class VcMod(commands.Cog):
     async def give(self, ctx, member: discord.Member):
         await member.remove_roles(*self.block_role)
         await member.add_roles(*self.access_role)
+        await ctx.send("Gave permissions to {member}")
 
     @checks.has_permissions(PermissionLevel.SUPPORTER)
     @voicemod.command(name="give", aliases=["disallow"])
     async def block(self, ctx, member: discord.Member):
         await member.remove_roles(*self.access_role)
         await member.add_roles(*self.block_role)
+        await ctx.send("Blocked permissions from {member}")
 
 async def setup(bot):
     await bot.add_cog(VcMod(bot))
