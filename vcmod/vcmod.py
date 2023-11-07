@@ -7,6 +7,8 @@ from discord.ext import commands
 class VcMod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.access_role = None
+        self.block_role = None
 
         print(self.access_role)
         print(self.block_role)
