@@ -16,6 +16,7 @@ class Userid_lister(commands.Cog):
     @thread_only()
     async def username(self, ctx):
         name = ctx.thread.recipient.display_name if ctx.thread.recipient is discord.Member else ctx.thread.recipient.name
+        print(type(ctx.thread.recipient))
         await ctx.send(name)
 
     @commands.Cog.listener()
