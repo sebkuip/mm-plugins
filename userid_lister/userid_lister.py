@@ -15,15 +15,13 @@ class Userid_lister(commands.Cog):
     @commands.command()
     @thread_only()
     async def username(self, ctx):
-        name = ctx.thread.recipient.display_name if ctx.thread.recipient is discord.Member else ctx.thread.recipient.name
-        print(type(ctx.thread.recipient))
-        await ctx.send(name)
+
+        await ctx.send(ctx.thread.recipient.display_name)
 
     @commands.Cog.listener()
     async def on_thread_ready(self, thread, creator, category, initial_message):
         await thread.channel.send(thread.recipient.id)
-        name = thread.recipient.display_name if thread.recipient is discord.Member else thread.recipient.name
-        await thread.channel.send(name)
+        await thread.channel.send(thread.recipient.display_name)
 
 
 async def setup(bot):
