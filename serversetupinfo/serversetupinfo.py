@@ -35,8 +35,8 @@ class ServerSetupInfo(commands.Cog):
         log_embed.set_footer(text="Ran at")
         log_embed.timestamp = ctx.message.created_at
 
-        info_channel = self.bot.get_channel(1068935113183858788)
-        log_channel = self.bot.get_channel(1066377714438787134)
+        info_channel = self.bot.get_channel(1242946917667962992)
+        log_channel = self.bot.get_channel(1283086005280440360)
 
         await info_channel.send(embed=info_embed)
         await log_channel.send(embed=log_embed)
