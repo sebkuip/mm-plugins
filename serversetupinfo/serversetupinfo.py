@@ -25,7 +25,7 @@ class ServerSetupInfo(commands.Cog):
     @commands.cooldown(1, 3600, type=commands.BucketType.guild)
     async def ssu(self, ctx: commands.Context):
         info_embed=discord.Embed(title="London Server Startup", description=f"  Come and visit the City of London! There is a server startup ongoing!\n\n  https://www.roblox.com/games/17428786424/City-of-London\n\n  **SSU hosted by {ctx.author.mention}>**", color=0x013a93, url="https://www.roblox.com/games/17428786424/City-of-London")
-        info_embed.set_author("United Kingdom")
+        info_embed.set_author(name="United Kingdom")
         info_embed.set_footer(text="Updated at")
         info_embed.timestamp = ctx.message.created_at
         info_embed.set_image("https://images-ext-1.discordapp.net/external/8eftouOgKVHU3gYu0C7hH1v65Vm7mXy6dRMhwcv5Zfc/https/i.ibb.co/wdcTLdc/Webp-34.png")
