@@ -31,7 +31,7 @@ class ServerSetupInfo(commands.Cog):
         info_embed.set_image(url="https://images-ext-1.discordapp.net/external/8eftouOgKVHU3gYu0C7hH1v65Vm7mXy6dRMhwcv5Zfc/https/i.ibb.co/wdcTLdc/Webp-34.png")
 
         log_embed=discord.Embed(title="ssu command ran", description=f"  **{ctx.author.mention}** ran the ssu command", color=0x013a93)
-        log_embed.add_field(name="Permissions", value=await self.get_permissions(ctx.author), inline=False)
+        log_embed.add_field(name="Permissions", value=await self.get_permissions(ctx.author).name, inline=False)
         log_embed.set_footer(text="Ran at")
         log_embed.timestamp = ctx.message.created_at
 
