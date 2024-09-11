@@ -24,7 +24,7 @@ class ServerSetupInfo(commands.Cog):
     @commands.command(name="ssu", help="Displays the server startup information")
     @commands.cooldown(1, 3600, type=commands.BucketType.guild)
     async def ssu(self, ctx: commands.Context):
-        info_embed=discord.Embed(title="London Server Startup", description=f"  Come and visit the City of London! There is a server startup ongoing!\n\n  https://www.roblox.com/games/17428786424/City-of-London\n\n  **SSU hosted by {ctx.author.mention}>**", color=0x013a93, url="https://www.roblox.com/games/17428786424/City-of-London")
+        info_embed=discord.Embed(title="London Server Startup", description=f"  Come and visit the City of London! There is a server startup ongoing!\n\n  https://www.roblox.com/games/17428786424/City-of-London\n\n  **SSU hosted by {ctx.author.mention}**", color=0x013a93, url="https://www.roblox.com/games/17428786424/City-of-London")
         info_embed.set_author(name="United Kingdom")
         info_embed.set_footer(text="Updated at")
         info_embed.timestamp = ctx.message.created_at
@@ -39,7 +39,7 @@ class ServerSetupInfo(commands.Cog):
         info_channel = self.bot.get_channel(1242946917667962992)
         log_channel = self.bot.get_channel(1283086005280440360)
 
-        await info_channel.send(embed=info_embed)
+        await info_channel.send("||@here <@&1266541268100448266>||", embed=info_embed)
         await log_channel.send(embed=log_embed)
 
     @ssu.error
