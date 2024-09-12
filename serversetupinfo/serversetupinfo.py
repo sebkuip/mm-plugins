@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import datetime
 
 from core import checks
 from core.models import PermissionLevel
@@ -44,12 +45,12 @@ class ServerSetupInfo(commands.Cog):
 
     @ssu.error
     async def ssu_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.command.reset_cooldown(ctx)
         if isinstance(error, commands.CheckFailure):
             await ctx.send(embed=discord.Embed(title="Error", description="You do not have the required permissions to run this command.", color=0xff0000))
         elif isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(embed=discord.Embed(title="Error", description=f"This command is on cooldown. Please try again in {error.retry_after:.2f} seconds.", color=0xff0000))
+            await ctx.send(embed=discord.Embed(title="Error", description=f"This command is on cooldown. Please try again <t:{round((discord.utils.utcnow() + datetime.timedelta(seconds=error.retry_after)).timestamp())}:R>.", color=0xff0000))
         else:
+            await ctx.command.reset_cooldown(ctx)
             raise error
 
 async def setup(bot):
