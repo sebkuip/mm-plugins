@@ -95,8 +95,7 @@ class Questions(commands.Cog):
 
         # Get the review message from config or use the default
         review_message = config.get('review_message', 
-            'Your appeal will now be reviewed by our moderation team. '
-            'If you have new information to share about this case, please reply to this message.'
+            'What do you need help with?'
         )
         
         q_message.content = review_message
