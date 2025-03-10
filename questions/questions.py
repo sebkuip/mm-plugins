@@ -153,7 +153,7 @@ class Questions(commands.Cog):
         m = await self.wait_for_channel_response(ctx.channel, ctx.author)
         if not m:
             return await ctx.send('Timed out.')
-        review_message = m.content.strip() or 'Your appeal will now be reviewed by our moderation team. If you have new information to share about this case, please reply to this message.'
+        review_message = m.content.strip() or 'The team will get back to you as soon as possible.'
 
         await self.db.find_one_and_update(
             {'_id': 'config'},
