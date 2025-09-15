@@ -114,7 +114,7 @@ class AltBuster(commands.Cog):
             return
 
         for username in self.config["usernames"]:
-            if re.search(username, member.name, re.IGNORECASE):
+            if re.fullmatch(username, member.name, re.IGNORECASE):
                 self.config["pending_users"].append(member.id)
                 await self.update_config()
 
@@ -127,7 +127,7 @@ class AltBuster(commands.Cog):
             return
 
         for msg in self.config["messages"]:
-            if re.search(msg, message.content, re.IGNORECASE):
+            if re.fullmatch(msg, message.content, re.IGNORECASE):
                 self.config["pending_users"].append(message.author.id)
                 await self.update_config()
                 return
