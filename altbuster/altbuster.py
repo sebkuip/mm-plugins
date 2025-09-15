@@ -13,7 +13,6 @@ class AltBuster(commands.Cog):
             "enabled": False,
             "usernames": [],
             "messages": [],
-            "action": "ban",  # or "kick"
             "pending_users": []
         }
         self.process_pending_users.start()
@@ -97,6 +96,14 @@ class AltBuster(commands.Cog):
             await ctx.send("The alt buster messages list is empty.")
             return
         await ctx.send("Alt buster messages:\n" + "\n".join(self.config["messages"]))
+
+    @altbuster.command(name="listpending", help="List all pending users to be banned")
+    @checks.has_permissions(PermissionLevel.ADMIN)
+    async def altbuster_listpending(self, ctx):
+        if not self.config["pending_users"]:
+            await ctx.send("There are no pending users to be banned.")
+            return
+        await ctx.send("Pending users to be banned:\n" + "\n".join(map(str, self.config["pending_users"])))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
