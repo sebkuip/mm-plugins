@@ -64,9 +64,9 @@ class AltBuster(commands.Cog):
         await self.update_config()
         await ctx.send(f"Removed '{username}' from the alt list.")
 
-    @altbuster.command(name="setmessage", help="Set the message for the alt buster")
+    @altbuster.command(name="addmessage", help="Add a message for the alt buster")
     @checks.has_permissions(PermissionLevel.ADMIN)
-    async def altbuster_setmessage(self, ctx, *, message: str):
+    async def altbuster_addmessage(self, ctx, *, message: str):
         self.config["messages"].append(message)
         await self.update_config()
         await ctx.send("Added a new message for the alt buster.")
