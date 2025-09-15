@@ -15,7 +15,7 @@ class AltBuster(commands.Cog):
             "messages": [],
             "pending_users": []
         }
-        self.process_pending_users.start()
+        # self.process_pending_users.start()
 
     async def cog_load(self):
         self.config = await self.db.find_one({"_id": "altbuster"})
