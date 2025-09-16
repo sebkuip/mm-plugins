@@ -105,6 +105,16 @@ class AltBuster(commands.Cog):
             return
         await ctx.send("Pending users to be banned:\n" + "\n".join(map(str, self.config["pending_users"])))
 
+    @altbuster.command(name="removepending", help="Remove a user from the pending ban list")
+    @checks.has_permissions(PermissionLevel.ADMIN)
+    async def altbuster_removepending(self, ctx, user_id: int):
+        if user_id not in self.config["pending_users"]:
+            await ctx.send("This user is not in the pending ban list.")
+            return
+        self.config["pending_users"].remove(user_id)
+        await self.update_config()
+        await ctx.send(f"Removed user {user_id} from the pending ban list.")
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         if not self.config["enabled"] or member.bot:
